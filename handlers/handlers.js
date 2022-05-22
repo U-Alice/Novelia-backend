@@ -2,6 +2,11 @@ const uuid = require('uuid');
 const { Book } = require('../models/bookModel')
 const _ = require('lodash');
 const cloudinary = require('cloudinary').v2;
+const mongoose = require('mongoose');
+const multer = require('multer');
+const GridFs = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+ 
 cloudinary.config({
     cloud_name: "daso1btiz",
     api_key: "468557256968463",
@@ -22,7 +27,6 @@ module.exports.uploadBook = (req, res) => {
                         return res.send(error.message)
                     }else{
                        return res.send(result)
-                        console.log(result)
                     }
                 })
             } else {

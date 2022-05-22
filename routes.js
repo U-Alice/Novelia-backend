@@ -13,6 +13,9 @@ const upload = multer({storage: storage})
 const {uploadBook} = require('./handlers/handlers')
 
 module.exports.router = (app)=>{
-    router.post('/newBook' ,upload.single('book'), uploadBook())
+    router.post('/newBook' ,upload.single('book'), uploadBook());
+    // router.get('/uploads',(req, res)=>{
+    //     res.render('index')
+    // })
     app.use(router)
 }
