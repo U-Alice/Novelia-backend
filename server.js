@@ -4,8 +4,10 @@ const dotenv = require('dotenv');
 const { router } = require('./routes');
 const { database } = require('./utils/database');
 dotenv.config()
-database()
+database();
 router(app);
+app.use(express.json())
+app.use(express.urlencoded({extended: true}));
 app.listen(process.env.PORT, ()=>{
     console.log('server listening on port '+process.env.PORT);
 });

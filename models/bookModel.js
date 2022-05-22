@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-
+const uuid = require('uuid')
 const bookSchema = mongoose.Schema({
     bookId:{
         type: String,
-        required: true
+        default: uuid.v4()
     },
     name: {
         type: String,
@@ -27,4 +27,4 @@ const bookSchema = mongoose.Schema({
     },
 
 })
-modules.exports.Book = mongoose.model('Book',bookSchema)
+module.exports.Book = mongoose.model('Book',bookSchema)
