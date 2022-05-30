@@ -1,14 +1,18 @@
 const express = require('express');
 const app = express();
-const dotenv = require('dotenv');
 const { router } = require('./routes');
-const { database } = require('./utils/database');
 const path = require("path");
 const crypto = require('crypto');
 const methodOverride =  require('method-override');
-
+const dotenv = require('dotenv');
 dotenv.config()
-database();
+const mongoose = require('mongoose')
+const Grid = require('gridfs-stream')
+const database = mongoose.createConnection(process.env.URL)
+database.once('open', ()=>{
+    gfs = Grid(database.db, mongoose.mongo);
+    gfs.collection('uploads');
+})
 router(app);
 app.use(express.json());
 app.set('view engine', 'ejs');
