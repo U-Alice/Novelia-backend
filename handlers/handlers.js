@@ -65,6 +65,7 @@ module.exports.getUploads = (req, res, next) => {
 
 module.exports.getOne = () => {
   return async (req, res) => {
+    
     await gfs.files.findOne(
       { filename: req.params.filename },
       async (err, file) => {
@@ -96,6 +97,7 @@ module.exports.getBook = () => {
   return async (req, res) => {
     const fetch = require("node-fetch");
     let books = [];
+    let book;
     const url = "https://bookshelves.p.rapidapi.com/books";
 
     const options = {
@@ -106,18 +108,24 @@ module.exports.getBook = () => {
       },
     };
 
-    fetch(url, options)
-      .then((res) => res.json())
-      .then((json) =>{
-        console.log(typeof(json))
-        console.log(json.Books.map(item =>{
-          books.push(item)
-          const book = new Book(item)
+   async function fetch(){
+   fetch(url, options)
+     .then((res) => res.json())
+     .then((json) =>{
+       console.log(typeof(json))
+       console.log(json.Books.map(item =>{
+         books.push(item)
+         book = new Book(item)
+         book.save().then(()=>{
+           console.log('saved')
+          })
         }));
-      
+        
       console.log(books);
       } )
       .catch((err) => console.error("error:" + err));
   };
+}
+fetch()
  
 };
