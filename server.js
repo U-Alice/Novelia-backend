@@ -8,6 +8,8 @@ const dotenv = require('dotenv');
 dotenv.config()
 const mongoose = require('mongoose')
 const Grid = require('gridfs-stream')
+const bodyParser = require('body-parser')
+const fileupload = require('express-fileupload');
 const database = mongoose.connect(process.env.URL).then(()=>{
     console.log('connected to the database')
 }).catch(()=>{
@@ -17,8 +19,11 @@ const database = mongoose.connect(process.env.URL).then(()=>{
 //     gfs = Grid(database.db, mongoose.mongo);
 //     gfs.collection('uploads');
 // })
+app.use(fileupload())
+// app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}))
 router(app);
-app.use(express.json());
 app.set('view engine', 'ejs');
 app.use(methodOverride('_method'))
 app.use(express.urlencoded({extended: true}));

@@ -9,6 +9,7 @@ const dotenv = require("dotenv");
 const { ReadStream } = require("fs-extra");
 const { GridFSBucket } = require("mongodb");
 const rapidApi = require("rapidapi-connect");
+const { result } = require("lodash");
 const rapid = new rapidApi("", "");
 dotenv.config();
 
@@ -30,9 +31,10 @@ conn.once("open", () => {
   gfs = Grid(conn.db, mongoose.mongo);
   gfs.collection("uploads");
 });
-module.exports.uploadBook = (req, res) => {
-  return async (req, res, next) => {
+module.exports.uploadBook = () => {
+  return async (req, res) => {
     try {
+      console.log(req.file)
       if (req.file) {
         const newBook = _.pick(req.body, [
           "name",
@@ -41,6 +43,7 @@ module.exports.uploadBook = (req, res) => {
           "author",
           "preview",
         ]);
+        cloudinary.uploader.upload(req.file.filename, (error, result)=> console.log(result, error))
         const saveBook = new Book(newBook);
         await saveBook.save();
       } else {
@@ -63,44 +66,44 @@ module.exports.getUploads = (req, res, next) => {
   });
 };
 
-module.exports.getOne = () => {
-  return async (req, res) => {
+// module.exports.getOne = (req, res) => {
+//   return async () => {
     
-    await gfs.files.findOne(
-      { filename: req.params.filename },
-      async (err, file) => {
-        // Check if file
-        if (!file || file.length === 0) {
-          return res.status(404).json({
-            err: "No file exists",
-          });
-        }
-        // Check if image
-        if (
-          file.contentType === "image/jpeg" ||
-          file.contentType === "image/png"
-        ) {
-          console.log(file);
+//     await gfs.files.findOne(
+//       { filename: req.params.filename },
+//       async (err, file) => {
+//         // Check if file
+//         if (!file || file.length === 0) {
+//           return res.status(404).json({
+//             err: "No file exists",
+//           });
+//         }
+//         // Check if image
+//         if (
+//           file.contentType === "image/jpeg" ||
+//           file.contentType === "image/png"
+//         ) {
+//           console.log(file);
 
-          const readstream = gridFs.openDownloadStream(file._id);
-          readstream.pipe(res);
-        } else {
-          res.status(404).json({
-            err: "Not an image",
-          });
-        }
-      }
-    );
-  };
-};
+//           const readstream = gridFs.openDownloadStream(file._id);
+//           readstream.pipe(res);
+//         } else {
+//           res.status(404).json({
+//             err: "Not an image",
+//           });
+//         }
+//       }
+//     );
+//   };
+// };
 
-module.exports.getBook = () => {
-  return async (req, res) => {
+
+module.exports.getBooks = (req, res) => {
+  return async () => {
     const fetch = require("node-fetch");
     let books = [];
     let book;
     const url = "https://bookshelves.p.rapidapi.com/books";
-
     const options = {
       method: "GET",
       headers: {
@@ -112,9 +115,14 @@ module.exports.getBook = () => {
     const data = await api.json()
     console.log(data)
       data.Books.map(async item =>{
-        books.push(item)
-        book = new Book(item)
-        await book.save()
+        const existingBook = await Book.findOne({title: item.title})
+        if(!existingBook){
+          book = new Book(item)
+          await book.save()
+          res.send({sucess: true, bookDetails: item})
+        }else{
+          console.log("found book")
+        }
     })
 }
  
