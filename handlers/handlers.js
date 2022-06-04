@@ -143,3 +143,33 @@ module.exports.getOne = () => {
     }
   };
 };
+
+
+module.exports.topTen = ()=>{
+  return async () => {
+    const fetch = require("node-fetch");
+    let books = [];
+    let book;
+    const url = "https://bookshelves.p.rapidapi.com/books";
+    const options = {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Host": "bookshelves.p.rapidapi.com",
+        "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
+      },
+    };
+    const api = await fetch(url, options);
+    const data = await api.json();
+    console.log(data);
+    data.Books.map(async (item) => {
+      const existingBook = await Book.findOne({ title: item.title });
+      if (!existingBook) {
+        book = new Book(item);
+        await book.save();
+        res.send({ sucess: true, bookDetails: item });
+      } else {
+        console.log("found book");
+      }
+    });
+  };
+}
