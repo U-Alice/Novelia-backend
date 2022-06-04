@@ -81,9 +81,9 @@ module.exports.getOne = () => {
     });
 }
 }
-module.export.getBooks = ()=>{
+module.exports.getBook = () =>{
   return async (req, res)=>{
-    const fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 const url = 'https://hapi-books.p.rapidapi.com/book/56597885';
 
