@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
-const uuid = require('uuid')
+const uuid = require('uuid');
 const bookSchema = mongoose.Schema({
     bookId:{
         type: String,
         default: uuid.v4()
     },
-    name: {
+    title: {
         type: String,
         required: true,
     },
-    year: {
+    source: {
         type: String,
         required: true
     },
@@ -17,14 +17,25 @@ const bookSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    preview:{
-        type: String, 
-        required: true
-    }, 
     rating:{
         type: String,
         required: true
     },
+    imgUrl:{
+        type: String, 
+        required: true
+    }, 
+    description:{
+        type: String
+    }, 
+    price:{
+        type: String, 
+        required: true
+    }, 
+    review: {
+        type: String
+    }
+
 
 })
 module.exports.Book = mongoose.model('Book',bookSchema)
