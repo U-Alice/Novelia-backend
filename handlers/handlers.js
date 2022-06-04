@@ -93,6 +93,7 @@ module.exports.getOne = () => {
     );
   };
 };
+
 module.exports.getBook = () => {
   return async (req, res) => {
     const fetch = require("node-fetch");
@@ -107,25 +108,14 @@ module.exports.getBook = () => {
         "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
       },
     };
-
-   async function fetch(){
-   fetch(url, options)
-     .then((res) => res.json())
-     .then((json) =>{
-       console.log(typeof(json))
-       console.log(json.Books.map(item =>{
-         books.push(item)
-         book = new Book(item)
-         book.save().then(()=>{
-           console.log('saved')
-          })
-        }));
-        
-      console.log(books);
-      } )
-      .catch((err) => console.error("error:" + err));
-  };
+    const api = await fetch(url, options)
+    const data = await api.json()
+    console.log(data)
+      data.Books.map(async item =>{
+        books.push(item)
+        book = new Book(item)
+        await book.save()
+    })
 }
-fetch()
  
 };

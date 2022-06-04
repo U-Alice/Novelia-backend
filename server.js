@@ -8,11 +8,15 @@ const dotenv = require('dotenv');
 dotenv.config()
 const mongoose = require('mongoose')
 const Grid = require('gridfs-stream')
-const database = mongoose.createConnection(process.env.URL)
-database.once('open', ()=>{
-    gfs = Grid(database.db, mongoose.mongo);
-    gfs.collection('uploads');
+const database = mongoose.connect(process.env.URL).then(()=>{
+    console.log('connected to the database')
+}).catch(()=>{
+    console.log('not connected to the database')
 })
+// database.once('open', ()=>{
+//     gfs = Grid(database.db, mongoose.mongo);
+//     gfs.collection('uploads');
+// })
 router(app);
 app.use(express.json());
 app.set('view engine', 'ejs');
