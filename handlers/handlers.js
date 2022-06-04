@@ -34,7 +34,7 @@ conn.once("open", () => {
 module.exports.uploadBook = () => {
   return async (req, res) => {
     try {
-      console.log(req.file)
+      console.log(req.file);
       if (req.file) {
         const newBook = _.pick(req.body, [
           "name",
@@ -43,7 +43,9 @@ module.exports.uploadBook = () => {
           "author",
           "preview",
         ]);
-        cloudinary.uploader.upload(req.file.filename, (error, result)=> console.log(result, error))
+        cloudinary.uploader.upload(req.file.filename, (error, result) =>
+          console.log(result, error)
+        );
         const saveBook = new Book(newBook);
         await saveBook.save();
       } else {
@@ -68,7 +70,7 @@ module.exports.getUploads = (req, res, next) => {
 
 // module.exports.getOne = (req, res) => {
 //   return async () => {
-    
+
 //     await gfs.files.findOne(
 //       { filename: req.params.filename },
 //       async (err, file) => {
@@ -97,7 +99,6 @@ module.exports.getUploads = (req, res, next) => {
 //   };
 // };
 
-
 module.exports.getBooks = (req, res) => {
   return async () => {
     const fetch = require("node-fetch");
@@ -111,19 +112,34 @@ module.exports.getBooks = (req, res) => {
         "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
       },
     };
-    const api = await fetch(url, options)
-    const data = await api.json()
-    console.log(data)
-      data.Books.map(async item =>{
-        const existingBook = await Book.findOne({title: item.title})
-        if(!existingBook){
-          book = new Book(item)
-          await book.save()
-          res.send({sucess: true, bookDetails: item})
-        }else{
-          console.log("found book")
-        }
-    })
-}
- 
+    const api = await fetch(url, options);
+    const data = await api.json();
+    console.log(data);
+    data.Books.map(async (item) => {
+      const existingBook = await Book.findOne({ title: item.title });
+      if (!existingBook) {
+        book = new Book(item);
+        await book.save();
+        res.send({ sucess: true, bookDetails: item });
+      } else {
+        console.log("found book");
+      }
+    });
+  };
+};
+
+module.exports.getOne = () => {
+  return async (req, res) => {
+    try {
+      const book = await Book.findOne({ id: req.params.id });
+      if (book) {
+        res.send({sucess: true, book: book});
+      } else {
+        res.json({message: '"Book not found"'}).status(400);
+      }
+    } catch (err) {
+      console.log(err);
+      res.json({ message: "Internal server Errror" });
+    }
+  };
 };
