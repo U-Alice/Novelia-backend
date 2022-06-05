@@ -1,6 +1,7 @@
 const { List } = require("../models/readListModel")
 const lodash = require('lodash')
 const { Book } = require("../models/bookModel")
+const { ownKeys } = require("core-js/fn/reflect")
 
 module.exports.createList = async (req, res, next) => {
     const token = req.body.token
@@ -22,5 +23,20 @@ module.exports.createList = async (req, res, next) => {
         $inc : {count: 1}
          })
          res.send(existingList)
+    }
+}
+module.exports.getList = async (req, res)=>{
+    try{
+     const userId  = req.params.Id
+     const list = List.findOne({_id: userId})
+
+     if(List){
+         return res.json({status: oK, List: list}).status(200)
+     }
+     else{
+        return  res.json({status: OK, message:"no existing list, create new"}).status(200)
+     }
+    }catch(error){
+         res.json({error: error, message:"Internal server error"}).status(500)
     }
 }
