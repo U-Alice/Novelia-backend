@@ -7,6 +7,10 @@ const dotenv = require('dotenv');
 const path = require('path')
 dotenv.config()
 const mongoose = require('mongoose');
+// const {login, register, recover} = require('../controllers/userController.js')
+const auth = require('../middleware/auth')
+// const express = require('express')
+const Router = require('express').Router
 // const Grid = require('gridfs-stream');
 
 // const storage = new GridFsStorage({
@@ -30,8 +34,15 @@ const mongoose = require('mongoose');
 // })
 // const upload = multer({storage})
 const {uploadBook, getUploads, getOne, getBooks} = require('./handlers/handlers');
+const { login, register, forgotPassword } = require('./handlers/userController');
 
-module.exports.router = (app)=>{
+
+
+module.exports.setupRouter= (app, db)=>{
+    
+    router.post('/login',login());
+    router.post('/register', register());
+    router.post('/reset', forgotPassword())
     router.post('/upload',uploadBook());
     router.get('/getBOoks', getBooks());
     router.post('/uploaded', (req, res)=>{
