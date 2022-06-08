@@ -56,14 +56,7 @@ module.exports.login = (db) => {
    const  user = await User.findOne({
        email: req.body.email
     }).exec();
-      console.log('WE are building login')
       console.log(user)
-      // if (!user) {
-      //   return res.status(400).json({ 
-      //     message: "User not found" ,
-      //     status: "failed"
-      //   });
-      // }
     if (!bcrypt.compareSync(req.body.password, user.password)) {
      return  res.status(400).send({ message: "Invalid password" });
     } else {
@@ -116,7 +109,7 @@ module.exports.forgotPassword = (db) => {
           </html>
           `
       }
-      await transporter.sendMail(mailOptions, (error, info) => {
+       transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
               console.log(error)
           }
