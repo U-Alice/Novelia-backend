@@ -13,7 +13,7 @@ OTP:{
     type:String,
     required: true
 },
-createdAt:{type: new Date(Date.now()), expires: 900}
+// createdAt:{type: new Date(Date.now()), expires: 900}
 })
 
 

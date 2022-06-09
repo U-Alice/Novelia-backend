@@ -8,7 +8,7 @@ const path = require('path')
 dotenv.config()
 const mongoose = require('mongoose');
 // const {login, register, recover} = require('../controllers/userController.js')
-const auth = require('../middleware/auth')
+// const auth = require('../middleware/auth')
 // const express = require('express')
 const Router = require('express').Router
 // const Grid = require('gridfs-stream');
@@ -38,7 +38,7 @@ const { login, register, forgotPassword } = require('./handlers/userController')
 
 
 
-module.exports.setupRouter= (app, db)=>{
+module.exports.router= (app, db)=>{
     
     router.post('/login',login());
     router.post('/register', register());

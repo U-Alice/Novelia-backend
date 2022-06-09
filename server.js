@@ -31,6 +31,9 @@ app.set("views", path.join(__dirname, "views"));
 app.get('/uploads', (req, res)=>{
     res.render('index');
 })
+app.get('/login', (req, res)=>{
+     res.render('login')
+})
 app.listen(process.env.PORT, ()=>{
     console.log('server listening on port '+process.env.PORT);
 });

@@ -1,11 +1,9 @@
 const { db } = require("../utils/database");
-// const { User } = require("../models/userSchema.js");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-// const { Password } = require("../models/resetPasswordSchema.js");
-const { sendMail } = require("../utils/sendMail");
 const { User } = require("../models/userModel");
 const { Password } = require("../models/passworreset");
+const { sendMail } = require("../utils/sendMail");
 
 module.exports.register = (db) => {
   return async (req, res) => {
