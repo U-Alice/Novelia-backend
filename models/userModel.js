@@ -7,18 +7,6 @@ const userSchema = new mongoose.Schema({
            type:String,
            required:true
        },
-       firstName:{
-           type:String,
-           minlength:1,
-           maxlength:100,
-           required:true
-       },
-       lastName:{
-        type:String,
-        minlength:1,
-        maxlength:100,
-        required:true
-       },
        userName: {
            type:String,
            minlength:1,
@@ -32,15 +20,13 @@ const userSchema = new mongoose.Schema({
            maxlength:128,
            required:true
        },
-
 });
+
 
 module.exports.User = mongoose.model('User',userSchema);
 
 const validate = (user)=>{
 const Schema = joi.object({
-    firstName:joi.string().required().label('firstName'),
-    lastName:joi.string().required().label('lastName'),
     userName:joi.string().required().label('userName'),
     email:joi.string().email().required().label('email'),
     password: joi().string().required().min(8).label("password"),

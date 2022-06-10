@@ -1,11 +1,12 @@
 const nodemailer = require('nodemailer')
-
+const dotenv = require('dotenv')
+dotenv.config()
 module.exports.sendMail = (req)=>{
     const transporter = nodemailer.createTransport({
     host: "smtp-mail.outlook.com",
     auth: {
-      user: "hallcoder25@outlook.com",
-      pass: "!!!?!?123Abana",
+      user: process.env.EMAIL,
+      pass: process.env.PASS,
     },
     tls: {
       rejectUnauthorized: false,
