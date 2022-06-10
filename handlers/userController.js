@@ -6,43 +6,51 @@ const { Password } = require("../models/passworreset");
 const { sendMail } = require("../utils/sendMail");
 const QueryString = require("qs");
 const redirectURI = "auth/google";
+const jwt = require("jsonwebtoken");
 const axios = require("axios");
+
+async function newUser(email, password, username) {
+  const result = await User.findOne({ email: email});
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  if (result) {
+    return res.status(401).json({
+      message: "Email already registered",
+      status: "failed",
+    });
+  }
+
+  try {
+    const user = new User({
+      email: req.body.email,
+      password: hashedPassword,
+      userName: username,
+    });
+    await user.save();
+    sendMail(req);
+    // res.cookie("token", token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "none",
+    // });
+    res.status(200).json({
+      message: "User registered successfully",
+      status: "success",
+    });
+  } catch (error) {
+    res.status(401).json({
+      message: error.message,
+      status: "failed",
+    });
+  }
+}
 
 module.exports.register = (db) => {
   return async (req, res) => {
-    const result = await User.findOne({ email: req.body.email });
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    if (result) {
-      return res.status(401).json({
-        message: "Email already registered",
-        status: "failed",
-      });
-    }
-
-    try {
-      const user = new User({
-        email: req.body.email,
-        password: hashedPassword,
-        userName: req.body.userName,
-      });
-      await user.save();
-      sendMail(req);
-      // res.cookie("token", token, {
-      //   httpOnly: true,
-      //   secure: true,
-      //   sameSite: "none",
-      // });
-      res.status(200).json({
-        message: "User registered successfully",
-        status: "success",
-      });
-    } catch (error) {
-      res.status(401).json({
-        message: error.message,
-        status: "failed",
-      });
-    }
+     const email = req.body.email
+     const password = req.body.password
+     const username = req.body.username
+  newUser(email, password, username)
   };
 };
 
@@ -168,12 +176,6 @@ module.exports.oAuth = () => {
     res.redirect(getGoogleAuthUrl());
   };
 };
-// const oauth2Client = new google.auth.OAuth2(
-//   process.env.GOOGLE_CLIENT_ID,
-//   PROCESS.env.GOOGLE_CLIENT_SECRET,
-//   "http://localhost:3000/auth/google"
-// )
-//
 module.exports.getGoogleUser = () => {
   return async (req, res) => {
     console.log("reached here");
@@ -201,10 +203,9 @@ module.exports.getGoogleUser = () => {
       .catch((error) => {
         throw new Error(error.message);
       });
-    res.send(googleUser);
-    return googleUser;
   };
 };
+
 function getTokens({ code }) {
   const url = "https://oauth2.googleapis.com/token";
   const values = {
