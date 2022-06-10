@@ -10,47 +10,51 @@ const jwt = require("jsonwebtoken");
 const axios = require("axios");
 
 async function newUser(email, password, username) {
-  const result = await User.findOne({ email: email});
+  // return console.log("done");
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
+  const result = await User.findOne({ email: email });
   if (result) {
-    return res.status(401).json({
-      message: "Email already registered",
-      status: "failed",
-    });
+    const message = {
+      message: "Email is already registered", 
+      status:"Failed",
+      statusCode: 401
+    }
+    return message
   }
+  const user = new User({
+    email: email,
+    password: hashedPassword,
+    userName: username,
+  });
+  await user.save();
+  const message = {
+    message: "User registration successfull", 
+    status:"success",
+    statusCode: 200
+  }
+  return message;
 
-  try {
-    const user = new User({
-      email: req.body.email,
-      password: hashedPassword,
-      userName: username,
-    });
-    await user.save();
-    sendMail(req);
-    // res.cookie("token", token, {
-    //   httpOnly: true,
-    //   secure: true,
-    //   sameSite: "none",
-    // });
-    res.status(200).json({
-      message: "User registered successfully",
-      status: "success",
-    });
-  } catch (error) {
-    res.status(401).json({
-      message: error.message,
-      status: "failed",
-    });
-  }
-}
+  // sendMail({email});
+
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      });
+
+
+    }
+
 
 module.exports.register = (db) => {
   return async (req, res) => {
-     const email = req.body.email
-     const password = req.body.password
-     const username = req.body.username
-  newUser(email, password, username)
+    const email = req.body.email;
+    const password = req.body.password;
+    const username = req.body.userName;
+    const response= await newUser(email, password, username);
+     return res.status(response.statusCode).json({message: response.message, success: response.status})
   };
 };
 
@@ -63,12 +67,16 @@ module.exports.login = (db) => {
     if (!bcrypt.compareSync(req.body.password, user.password)) {
       return res.status(400).send({ message: "Invalid password" });
     } else {
-      // const token = user.generateAuthToken();
+      const token = user.generateAuthToken();
       res.status(200).json({
         success: true,
         message: "Log in successfull",
         data: user,
-        // token: token,
+        token: token,
+      }).cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
       });
     }
   };
@@ -178,18 +186,16 @@ module.exports.oAuth = () => {
 };
 module.exports.getGoogleUser = () => {
   return async (req, res) => {
-    console.log("reached here");
     const code = req.query.code;
     let tokens;
     try {
       const response = await getTokens({ code });
       tokens = response;
-      console.log("[LOG]:", response);
     } catch (e) {
       console.log(e);
       return res.json({ message: "Failed to make the request" });
     }
-    console.log(tokens);
+
     const googleUser = await axios
       .get(
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`,
@@ -203,7 +209,10 @@ module.exports.getGoogleUser = () => {
       .catch((error) => {
         throw new Error(error.message);
       });
-  };
+    await newUser(googleUser.email, googleUser.given_name, googleUser.id);
+    const response= await newUser(googleUser.email, googleUser.id, googleUser.given_name);
+    return res.status(response.statusCode).json({message: response.message, success: response.status})
+ }; 
 };
 
 function getTokens({ code }) {
@@ -225,7 +234,6 @@ function getTokens({ code }) {
       },
     })
     .then((res) => {
-      console.log(res);
       return res.data;
     })
     .catch((error) => {
