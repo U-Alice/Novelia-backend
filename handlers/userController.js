@@ -64,20 +64,24 @@ module.exports.login = (db) => {
       email: req.body.email,
     }).exec();
     console.log(user);
+    if(!user){
+      return res.send('Invalid user credentials')
+    }
     if (!bcrypt.compareSync(req.body.password, user.password)) {
       return res.status(400).send({ message: "Invalid password" });
     } else {
-      const token = user.generateAuthToken();
-      res.status(200).json({
-        success: true,
-        message: "Log in successfull",
-        data: user,
-        token: token,
-      }).cookie("token", token, {
+      const token = user.generateToken();
+      res.cookie("token", token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
       });
+      return res.status(200).json({
+        success: true,
+        message: "Log in successfull",
+        data: user,
+        token: token,
+      })
     }
   };
 };

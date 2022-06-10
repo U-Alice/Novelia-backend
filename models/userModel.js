@@ -2,7 +2,8 @@
 const mongoose = require('mongoose');
 const emailMongo = require('mongoose-type-email');
 const joi = require('joi')
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken')
 dotenv.config()
 const userSchema = new mongoose.Schema({
        email:{
@@ -21,6 +22,10 @@ const userSchema = new mongoose.Schema({
            maxlength:128,
            required:true
        },
+       token:{
+        type: String, 
+        required: true
+       }
 });
 userSchema.methods.generateToken = function(cb){
     var user = this;
@@ -28,7 +33,7 @@ userSchema.methods.generateToken = function(cb){
     user.token = token;
     user.save(function(err,user){
         if(err) return cb(err);
-        return user.token;
+        return user;
     })
 };
 userSchema.statics.findByToken = function(token,cb){

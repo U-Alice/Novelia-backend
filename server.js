@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const methodOverride =  require('method-override');
 const dotenv = require('dotenv');
 dotenv.config()
+const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const Grid = require('gridfs-stream')
 const bodyParser = require('body-parser')
@@ -23,6 +24,7 @@ app.use(fileupload())
 // app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(cookieParser())
 router(app);
 app.set('view engine', 'ejs');
 app.use(methodOverride('_method'))
