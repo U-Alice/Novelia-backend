@@ -165,7 +165,7 @@ function getGoogleAuthUrl() {
 
 module.exports.oAuth = () => {
   return async (req, res) => {
-    res.send(getGoogleAuthUrl());
+    res.redirect(getGoogleAuthUrl());
   };
 };
 // const oauth2Client = new google.auth.OAuth2(
@@ -175,15 +175,25 @@ module.exports.oAuth = () => {
 // )
 //
 module.exports.getGoogleUser = () => {
-  return async () => {
-    const code = req.query.code
-    const { id_token, access_token } = await getTokens({code});
+  return async (req, res) => {
+    console.log("reached here");
+    const code = req.query.code;
+    let tokens;
+    try {
+      const response = await getTokens({ code });
+      tokens = response;
+      console.log("[LOG]:", response);
+    } catch (e) {
+      console.log(e);
+      return res.json({ message: "Failed to make the request" });
+    }
+    console.log(tokens);
     const googleUser = await axios
       .get(
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`,
         {
           headers: {
-            Authorization: `Bearer ${id_token}`,
+            Authorization: `Bearer ${tokens.id_token}`,
           },
         }
       )
@@ -191,28 +201,34 @@ module.exports.getGoogleUser = () => {
       .catch((error) => {
         throw new Error(error.message);
       });
-      res.send(googleUser)
+    res.send(googleUser);
     return googleUser;
   };
 };
-function getTokens({code}) {
-  const url = "https:  //oauth2.googleapis.com/token";
+function getTokens({ code }) {
+  const url = "https://oauth2.googleapis.com/token";
   const values = {
-    code,
+    code: code,
     client_id: process.env.GOOGLE_CLIENT_ID,
     client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    redirect_uri: redirectURI,
+    redirect_uri: "http://localhost:4001/auth/google",
     grant_type: "authorization_code",
   };
 
+  console.log(values);
+
   return axios
-    .post(url, QueryString.stringify(values), {
+    .post(url, values, {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      }, 
+        "Content-Type": "application/json",
+      },
     })
-    .then((res) => res.data)
+    .then((res) => {
+      console.log(res);
+      return res.data;
+    })
     .catch((error) => {
+      console.log(error.response.data);
       throw new Error(error);
     });
 }
