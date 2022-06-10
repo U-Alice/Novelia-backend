@@ -6,6 +6,7 @@ const { Password } = require("../models/passworreset");
 const { sendMail } = require("../utils/sendMail");
 const QueryString = require("qs");
 const redirectURI = "auth/google";
+const axios = require("axios");
 
 module.exports.register = (db) => {
   return async (req, res) => {
@@ -173,8 +174,29 @@ module.exports.oAuth = () => {
 //   "http://localhost:3000/auth/google"
 // )
 //
-module.exports.getTokens = (code ) =>{
-  const url = "https://oauth2.googleapis.com/token";
+module.exports.getGoogleUser = () => {
+  return async () => {
+    const code = req.query.code
+    const { id_token, access_token } = await getTokens({code});
+    const googleUser = await axios
+      .get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`,
+        {
+          headers: {
+            Authorization: `Bearer ${id_token}`,
+          },
+        }
+      )
+      .then((res) => res.data)
+      .catch((error) => {
+        throw new Error(error.message);
+      });
+      res.send(googleUser)
+    return googleUser;
+  };
+};
+function getTokens({code}) {
+  const url = "https:  //oauth2.googleapis.com/token";
   const values = {
     code,
     client_id: process.env.GOOGLE_CLIENT_ID,
@@ -187,10 +209,10 @@ module.exports.getTokens = (code ) =>{
     .post(url, QueryString.stringify(values), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-      },
+      }, 
     })
     .then((res) => res.data)
     .catch((error) => {
-      throw new Error(error.message);
+      throw new Error(error);
     });
 }
