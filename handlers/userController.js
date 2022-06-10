@@ -5,6 +5,7 @@ const { User } = require("../models/userModel");
 const { Password } = require("../models/passworreset");
 const { sendMail } = require("../utils/sendMail");
 const QueryString = require("qs");
+const redirectURI = "auth/google";
 
 module.exports.register = (db) => {
   return async (req, res) => {
@@ -23,7 +24,6 @@ module.exports.register = (db) => {
         email: req.body.email,
         password: hashedPassword,
         userName: req.body.userName,
-
       });
       await user.save();
       sendMail(req);
@@ -147,10 +147,10 @@ module.exports.updatePassword = () => {
 };
 function getGoogleAuthUrl() {
   const rootUrl = "https://accounts.google.com/o/oauth2/auth";
-  const redirectURI = "auth/google";
   const options = {
     redirect_uri: `${process.env.SERVER_ROOT_URI}/${redirectURI}`,
-    client_id: "47405812488-77ctquhbs9kbokl64kj52g4m4tfjo6ia.apps.googleusercontent.com",
+    client_id:
+      "47405812488-77ctquhbs9kbokl64kj52g4m4tfjo6ia.apps.googleusercontent.com",
     access_type: "offline",
     response_type: "code",
     prompt: "consent",
@@ -162,59 +162,35 @@ function getGoogleAuthUrl() {
   return `${rootUrl}?${QueryString.stringify(options)}`;
 }
 
-
-module.exports.oAuth = ()=>{
-  return async (req, res)=>{
+module.exports.oAuth = () => {
+  return async (req, res) => {
     res.send(getGoogleAuthUrl());
-  }
-}
+  };
+};
 // const oauth2Client = new google.auth.OAuth2(
-//   process.env.GOOGLE_CLIENT_ID, 
-//   PROCESS.env.GOOGLE_CLIENT_SECRET, 
+//   process.env.GOOGLE_CLIENT_ID,
+//   PROCESS.env.GOOGLE_CLIENT_SECRET,
 //   "http://localhost:3000/auth/google"
 // )
-async function getGoogleUser({code}){
-  const {tokens} = await getTokens(code);
-  const googleUser = await axio.get(
-    `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${tokens.access_token}`,
-  
-  {
-  headers:{
-    Authorization: `Bearer ${tokens.access_token}`
-  }.then(res=>{
-    return res.data;
-  }).catch(err=>{
-    throw new Error(error.message)
-})
-  })
-  return googleUser.data;
-}
-
-
-function getTokens({
-  code,
-  clientId,
-  clientSecret,
-  redirectUri,
-}) {
-
-  const url = 'https://oauth2.googleapis.com/token';
+//
+module.exports.getTokens = (code ) =>{
+  const url = "https://oauth2.googleapis.com/token";
   const values = {
     code,
     client_id: process.env.GOOGLE_CLIENT_ID,
     client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    redirect_uri: redirectUri,
-    grant_type: 'authorization_code',
+    redirect_uri: redirectURI,
+    grant_type: "authorization_code",
   };
 
   return axios
     .post(url, QueryString.stringify(values), {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        "Content-Type": "application/x-www-form-urlencoded",
       },
     })
     .then((res) => res.data)
     .catch((error) => {
       throw new Error(error.message);
     });
-  }
+}

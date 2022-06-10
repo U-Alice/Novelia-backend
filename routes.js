@@ -34,7 +34,7 @@ const Router = require('express').Router
 // })
 // const upload = multer({storage})
 const {uploadBook, getUploads, getOne, getBooks} = require('./handlers/handlers');
-const { login, register, forgotPassword, oAuth } = require('./handlers/userController');
+const { login, register, forgotPassword, oAuth, getTokens } = require('./handlers/userController');
 const { GoogleAuth } = require('google-auth-library');
 
 
@@ -47,7 +47,7 @@ module.exports.router= (app, db)=>{
     router.post('/upload',uploadBook());
     router.get('/getBOoks', getBooks());
     router.get('/getAuth', oAuth());
-    router.get('/auth/google', )
+    router.get('/auth/google', getTokens())
     router.post('/uploaded', (req, res)=>{
         console.log(req.file)
     })
