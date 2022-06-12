@@ -13,17 +13,22 @@ async function newUser(email, password, username) {
   // return console.log("done");
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const result =  User.find({
-    $or: [{ email: email, userName: username }],
-  }, (err, doc)=>{
-    if(err) throw err
+  const result = User.find(
+    {
+      $or: [{ email: email, userName: username }],
+    },
+    (err, doc) => {
+      if (err) throw err;
+    }
+  );
+  if (result) {
     const message = {
       message: "Email or username is already registered",
       status: "Failed",
       statusCode: 500,
     };
     return message;
-  });
+  }
 
   const user = new User({
     email: email,
@@ -40,14 +45,6 @@ async function newUser(email, password, username) {
     statusCode: 200,
   };
   return message;
-
-  // sendMail({email});
-
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-  });
 }
 
 module.exports.register = (db) => {
