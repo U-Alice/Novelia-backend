@@ -98,33 +98,68 @@ module.exports.getUploads = (req, res, next) => {
 //     );
 //   };
 // };
+module.exports.getChildrenBooks = () => {
+  return async (req, res) => {
+    const axios = require("axios");
 
-module.exports.getBooks = (req, res) => {
-  return async () => {
-    const fetch = require("node-fetch");
-    let books = [];
-    let book;
-    const url = "https://bookshelves.p.rapidapi.com/books";
     const options = {
       method: "GET",
+      url: "https://best-childrens-books.p.rapidapi.com/books/timegoodreads",
       headers: {
-        "X-RapidAPI-Host": "bookshelves.p.rapidapi.com",
         "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
+        "X-RapidAPI-Host": "best-childrens-books.p.rapidapi.com",
       },
     };
-    const api = await fetch(url, options);
-    const data = await api.json();
-    console.log(data);
-    data.Books.map(async (item) => {
+
+    axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+        response.data.Books.map(async (item) => {
       const existingBook = await Book.findOne({ title: item.title });
       if (!existingBook) {
         book = new Book(item);
         await book.save();
-        res.send({ sucess: true, bookDetails: item });
       } else {
         console.log("found book");
       }
     });
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
+  };
+};
+
+module.exports.getBooks = () => {
+  return async (req, res) => {
+    const fetch = require("node-fetch");
+    // let books = [];
+    // let book;
+    // const url = "https://bookshelves.p.rapidapi.com/books";
+    // const options = {
+    //   method: "GET",
+    //   headers: {
+    //     "X-RapidAPI-Host": "bookshelves.p.rapidapi.com",
+    //     "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
+    //   },
+    // };
+    // const api = await fetch(url, options);
+    // const data = await api.json();
+    // console.log(data);
+
+    // data.Books.map(async (item) => {
+    //   const existingBook = await Book.findOne({ title: item.title });
+    //   if (!existingBook) {
+    //     book = new Book(item);
+    //     await book.save();
+    //   } else {
+    //     console.log("found book");
+    //   }
+    // });
+
+    const availableBooks = await Book.find();
+    res.json({ books: availableBooks }).status(400);
   };
 };
 
@@ -133,9 +168,9 @@ module.exports.getOne = () => {
     try {
       const book = await Book.findOne({ id: req.params.id });
       if (book) {
-        res.send({sucess: true, book: book});
+        res.send({ sucess: true, book: book });
       } else {
-        res.json({message: '"Book not found"'}).status(400);
+        res.json({ message: '"Book not found"' }).status(400);
       }
     } catch (err) {
       console.log(err);
@@ -144,24 +179,23 @@ module.exports.getOne = () => {
   };
 };
 
-
-module.exports.topTen = ()=>{
+module.exports.topTen = () => {
   return async () => {
     const fetch = require("node-fetch");
     let books = [];
     let book;
-    const url = 'https://hapi-books.p.rapidapi.com/week/horror'
+    const url = "https://hapi-books.p.rapidapi.com/week/horror";
     const options = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'X-RapidAPI-Host': 'hapi-books.p.rapidapi.com',
-        'X-RapidAPI-Key': '9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c'
-      }
+        "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
+        "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
+      },
     };
-    
+
     const api = await fetch(url, options);
     const data = await api.json();
     console.log(data);
-    res.json({success: true, books: data}).status(200);
+    res.json({ success: true, books: data }).status(200);
   };
-}
+};

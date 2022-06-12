@@ -13,14 +13,9 @@ async function newUser(email, password, username) {
   // return console.log("done");
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const result = User.find(
-    {
-      $or: [{ email: email, userName: username }],
-    },
-    (err, doc) => {
-      if (err) throw err;
-    }
-  );
+  const result = await User.findOne({
+    $or: [{ email: email, userName: username }],
+  });
   if (result) {
     const message = {
       message: "Email or username is already registered",

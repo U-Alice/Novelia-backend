@@ -35,3 +35,26 @@ const bookSchema = mongoose.Schema({
 
 })
 module.exports.Book = mongoose.model('Book',bookSchema)
+
+const childrenBooks = mongoose.Schema({
+    bookId:{
+        type: String,
+        default: uuid.v4()
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    source: {
+        type: String,
+        required: true
+    },
+    imgUrl: {
+        type: String,
+        required: true
+    }
+
+
+
+})
+module.exports.childrenBooks = mongoose.model('ChildrenBooks',childrenBooks)

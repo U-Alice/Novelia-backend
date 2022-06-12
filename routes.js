@@ -45,7 +45,7 @@ module.exports.router= (app, db)=>{
     router.post('/register', register());
     router.post('/reset', forgotPassword())
     router.post('/upload',uploadBook());
-    router.get('/getBOoks', getBooks());
+    router.get('/getBooks', getBooks());
     router.get('/getAuth', oAuth());
     router.get('/auth/google', getGoogleUser())
     router.post('/uploaded', (req, res)=>{
