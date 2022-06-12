@@ -23,8 +23,7 @@ const userSchema = new mongoose.Schema({
            required:true
        },
        token:{
-        type: String, 
-        required: true
+        type: String    
        }
 });
 userSchema.methods.generateToken = function(cb){

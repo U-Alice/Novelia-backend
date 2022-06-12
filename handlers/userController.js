@@ -13,48 +13,52 @@ async function newUser(email, password, username) {
   // return console.log("done");
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
-  const result = await User.findOne({ email: email });
-  if (result) {
+  const result =  User.find({
+    $or: [{ email: email, userName: username }],
+  }, (err, doc)=>{
+    if(err) throw err
     const message = {
-      message: "Email is already registered", 
-      status:"Failed",
-      statusCode: 401
-    }
-    return message
-  }
+      message: "Email or username is already registered",
+      status: "Failed",
+      statusCode: 500,
+    };
+    return message;
+  });
+
   const user = new User({
     email: email,
     password: hashedPassword,
     userName: username,
   });
-  await user.save();
+  await user.save((err, doc) => {
+    if (err) console.dir(err);
+    console.log(doc);
+  });
   const message = {
-    message: "User registration successfull", 
-    status:"success",
-    statusCode: 200
-  }
+    message: "User registration successfull",
+    status: "success",
+    statusCode: 200,
+  };
   return message;
 
   // sendMail({email});
 
-
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      });
-
-
-    }
-
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
+}
 
 module.exports.register = (db) => {
   return async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.userName;
-    const response= await newUser(email, password, username);
-     return res.status(response.statusCode).json({message: response.message, success: response.status})
+    const response = await newUser(email, password, username);
+    return res
+      .status(response.statusCode)
+      .json({ message: response.message, success: response.status });
   };
 };
 
@@ -64,8 +68,8 @@ module.exports.login = (db) => {
       email: req.body.email,
     }).exec();
     console.log(user);
-    if(!user){
-      return res.send('Invalid user credentials')
+    if (!user) {
+      return res.send("Invalid user credentials");
     }
     if (!bcrypt.compareSync(req.body.password, user.password)) {
       return res.status(400).send({ message: "Invalid password" });
@@ -81,7 +85,7 @@ module.exports.login = (db) => {
         message: "Log in successfull",
         data: user,
         token: token,
-      })
+      });
     }
   };
 };
@@ -214,9 +218,15 @@ module.exports.getGoogleUser = () => {
         throw new Error(error.message);
       });
     await newUser(googleUser.email, googleUser.given_name, googleUser.id);
-    const response= await newUser(googleUser.email, googleUser.id, googleUser.given_name);
-    return res.status(response.statusCode).json({message: response.message, success: response.status})
- }; 
+    const response = await newUser(
+      googleUser.email,
+      googleUser.id,
+      googleUser.given_name
+    );
+    return res
+      .status(response.statusCode)
+      .json({ message: response.message, success: response.status });
+  };
 };
 
 function getTokens({ code }) {
@@ -246,13 +256,13 @@ function getTokens({ code }) {
     });
 }
 
-module.exports.logout = () =>{
- return async(req, res)=>{
-  User.findOneAndUpdate({_id: req.user._id}, {token: ''}, (err, doc)=>{
-    if(err) return res.json({success: false, err})
-    return res.status(200).send({
-      success: true
-    })
-  })
- }
-}
+module.exports.logout = () => {
+  return async (req, res) => {
+    User.findOneAndUpdate({ _id: req.user._id }, { token: "" }, (err, doc) => {
+      if (err) return res.json({ success: false, err });
+      return res.status(200).send({
+        success: true,
+      });
+    });
+  };
+};

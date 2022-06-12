@@ -9,6 +9,7 @@ dotenv.config()
 const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const Grid = require('gridfs-stream')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const fileupload = require('express-fileupload');
 const database = mongoose.connect(process.env.URL).then(()=>{
@@ -22,6 +23,7 @@ const database = mongoose.connect(process.env.URL).then(()=>{
 // })
 app.use(fileupload())
 // app.use(express.json());
+app.use(cors())
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
