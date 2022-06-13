@@ -7,33 +7,8 @@ const dotenv = require('dotenv');
 const path = require('path')
 dotenv.config()
 const mongoose = require('mongoose');
-// const {login, register, recover} = require('../controllers/userController.js')
-// const auth = require('../middleware/auth')
-// const express = require('express')
 const Router = require('express').Router
-// const Grid = require('gridfs-stream');
-
-// const storage = new GridFsStorage({
-//  url: process.env.URL, 
-//  file:(req, file)=>{
-//      return new Promise((resolve, reject)=>{
-//          crypto.randomBytes(16, (err, buf)=>{
-//              if(err){
-//                  return reject(err);
-//              }
-//              const filename = buf.toString('hex') + path.extname(file.originalname);
-//              const fileinfo = {
-//                  filename: filename, 
-//                  bucketName: 'uploads',
-//                  bookId: req.body.bookId
-//              }
-//              resolve(fileinfo);
-//          })
-//      })
-//  }
-// })
-// const upload = multer({storage})
-const {uploadBook, getUploads, getOne, getBooks, getChildrenBooks, topTen, getByGenre} = require('./handlers/handlers');
+const {uploadBook, getUploads, getOne, getBooks, getChildrenBooks, topTen, getByGenre, getBooksByGenre} = require('./handlers/handlers');
 const { login, register, forgotPassword, oAuth, getTokens, getGoogleUser } = require('./handlers/userController');
 const { GoogleAuth } = require('google-auth-library');
 
@@ -54,6 +29,7 @@ module.exports.router= (app, db)=>{
     router.get('/childrenBooks', getChildrenBooks())
     router.get('/topTen', topTen())
     router.get('/romance/getByGenre', getByGenre())
+    router.get('/getByGenre', getBooksByGenre())
     app.use(router)
 
 }

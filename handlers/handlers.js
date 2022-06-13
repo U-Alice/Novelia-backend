@@ -109,31 +109,6 @@ module.exports.getChildrenBooks = () => {
 
 module.exports.getBooks = () => {
   return async (req, res) => {
-    const fetch = require("node-fetch");
-    // let books = [];
-    // let book;
-    // const url = "https://bookshelves.p.rapidapi.com/books";
-    // const options = {
-    //   method: "GET",
-    //   headers: {
-    //     "X-RapidAPI-Host": "bookshelves.p.rapidapi.com",
-    //     "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
-    //   },
-    // };
-    // const api = await fetch(url, options);
-    // const data = await api.json();
-    // console.log(data);
-
-    // data.Books.map(async (item) => {
-    //   const existingBook = await Book.findOne({ title: item.title });
-    //   if (!existingBook) {
-    //     book = new Book(item);
-    //     await book.save();
-    //   } else {
-    //     console.log("found book");
-    //   }
-    // });
-
     const availableBooks = await Book.find();
     res.json({ books: availableBooks }).status(400);
   };
@@ -179,9 +154,11 @@ module.exports.topTen = () => {
 module.exports.getByGenre = () => {
   return async (req, res) => {
     const axios = require("axios");
+    let books = [];
+    let book;
     const options = {
       method: "GET",
-      url: "https://hapi-books.p.rapidapi.com/book/" + 56597885,
+      url: "https://hapi-books.p.rapidapi.com/week/comedy",
       headers: {
         "X-RapidAPI-Key": "541f046c76msh7a31cc1d5bbe523p106201jsnc0ea3ebaf14c",
         "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
@@ -190,35 +167,46 @@ module.exports.getByGenre = () => {
 
     axios
       .request(options)
-      .then(async function (response) {
+      .then(function (response) {
         console.log(response.data);
-        // book = new Romance(response.data);
-        // await book.save();
+
+        response.data.map(async (item) => {
+          book = new Romance(item);
+          await book.save();
+        });
       })
       .catch(function (error) {
         console.error(error);
       });
-    //   let books = [];
-    //   let book;
-    // const options = {
-    //   method: "GET",
-    //   url: "https://hapi-books.p.rapidapi.com/week/romance",
-    //   headers: {
-    //     "X-RapidAPI-Key": "9d38de447cmsh1d527ed906e4173p15538cjsna4122b80ed92",
-    //     "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
-    //   },
-    // };
+  };
+};
 
-    // axios
-    //   .request(options)
-    //   .then(function (response) {
-    //     console.log(response.data);
-
-    //     response.data.map(async (item) => {
-    //     });
-    //   })
-    //   .catch(function (error) {
-    //     console.error(error);
-    //   });
+module.exports.getBooksByGenre = () => {
+  return async (req, res) => {
+    const books = [];
+    try {
+      const genre = req.query.genre;
+      if (genre === "romance") {
+        books = await Romance.find();
+      }
+      switch (genre) {
+        case "romance":
+          books = await Romance.find();
+          break;
+        case "horror":
+          books = await Horror.find();
+          break;
+        case "science":
+          books = await Science.find();
+          break;
+        default:
+          res.json({ message: "Could not find requested genre" });
+          break;
+      }
+      res.json({ success: true, books: books }).status(200);
+    } catch (err) {
+      res.json({ success: false, error: "Internal server Error" });
+      console.log(err);
+    }
   };
 };

@@ -48,28 +48,15 @@ const romance = mongoose.Schema({
         type: String,
         required: true
     },
-    authors: {
-        type: Array,
+    cover:{
+        type: String,
         required: true
-    },
-    rating: {
-        type: Number, 
-        required: true
-    },
-    pages: {
-        type: Number
-    },
-    publishedDate:{
-        type: Date
-    },  
-    sypnosis: {
-        type: String
     },
     type:{
         type: String,
         required: true,
-        default: "romance"
+        default: "comedy"
     }
 })
 
-module.exports.Romance = mongoose.model('romance',romance)
+module.exports.Romance = mongoose.model('adventure',romance)
