@@ -40,7 +40,7 @@ const { GoogleAuth } = require('google-auth-library');
 
 
 module.exports.router= (app, db)=>{
-    
+
     router.post('/login',login());
     router.post('/register', register());
     router.post('/reset', forgotPassword())
@@ -53,7 +53,7 @@ module.exports.router= (app, db)=>{
     })
     router.get('/childrenBooks', getChildrenBooks())
     router.get('/topTen', topTen())
-    router.get('/getByGenre', getByGenre())
+    router.get('/romance/getByGenre', getByGenre())
     app.use(router)
 
 }

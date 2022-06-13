@@ -37,22 +37,39 @@ const bookSchema = mongoose.Schema({
 module.exports.Book = mongoose.model('Book',bookSchema)
 
 const romance = mongoose.Schema({
-    bookId:{
+    book_id:{
         type: String,
-        default: uuid.v4()
     },
-    title: {
+    name: {
         type: String,
         required: true,
-    },
-    source: {
-        type: String,
-        required: true
     },
     url: {
         type: String,
         required: true
+    },
+    authors: {
+        type: Array,
+        required: true
+    },
+    rating: {
+        type: Number, 
+        required: true
+    },
+    pages: {
+        type: Number
+    },
+    publishedDate:{
+        type: Date
+    },  
+    sypnosis: {
+        type: String
+    },
+    type:{
+        type: String,
+        required: true,
+        default: "romance"
     }
 })
 
-module.exports.Romance = mongoose.model('Romance',romance)
+module.exports.Romance = mongoose.model('romance',romance)

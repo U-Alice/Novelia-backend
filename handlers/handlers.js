@@ -175,37 +175,50 @@ module.exports.topTen = () => {
     res.json({ success: true, books: data }).status(200);
   };
 };
+
 module.exports.getByGenre = () => {
   return async (req, res) => {
-  const axios = require("axios");
-    let books = [];
-    let book;
-  const options = {
-    method: "GET",
-    url: "https://hapi-books.p.rapidapi.com/week/romance",
-    headers: {
-      "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
-      "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
-    },
-  };
+    const axios = require("axios");
+    const options = {
+      method: "GET",
+      url: "https://hapi-books.p.rapidapi.com/book/" + 56597885,
+      headers: {
+        "X-RapidAPI-Key": "541f046c76msh7a31cc1d5bbe523p106201jsnc0ea3ebaf14c",
+        "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
+      },
+    };
 
-  axios
-    .request(options)
-    .then(function (response) {
-      console.log(response.data);
-
-      data.Books.map(async (item) => {
-        const existingBook = await Romance.findOne({ title: item.name });
-        if (!existingBook) {
-          book = new Book(item);
-          await Romance.save();
-        } else {
-          console.log("found book");
-        }
+    axios
+      .request(options)
+      .then(async function (response) {
+        console.log(response.data);
+        // book = new Romance(response.data);
+        // await book.save();
+      })
+      .catch(function (error) {
+        console.error(error);
       });
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
-  }
+    //   let books = [];
+    //   let book;
+    // const options = {
+    //   method: "GET",
+    //   url: "https://hapi-books.p.rapidapi.com/week/romance",
+    //   headers: {
+    //     "X-RapidAPI-Key": "9d38de447cmsh1d527ed906e4173p15538cjsna4122b80ed92",
+    //     "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
+    //   },
+    // };
+
+    // axios
+    //   .request(options)
+    //   .then(function (response) {
+    //     console.log(response.data);
+
+    //     response.data.map(async (item) => {
+    //     });
+    //   })
+    //   .catch(function (error) {
+    //     console.error(error);
+    //   });
+  };
 };
