@@ -1,5 +1,5 @@
 const uuid = require("uuid");
-const { Book } = require("../models/bookModel");
+const { Book, childrenBooks } = require("../models/bookModel");
 const _ = require("lodash");
 const cloudinary = require("cloudinary").v2;
 const mongoose = require("mongoose");
@@ -68,38 +68,10 @@ module.exports.getUploads = (req, res, next) => {
   });
 };
 
-// module.exports.getOne = (req, res) => {
-//   return async () => {
-
-//     await gfs.files.findOne(
-//       { filename: req.params.filename },
-//       async (err, file) => {
-//         // Check if file
-//         if (!file || file.length === 0) {
-//           return res.status(404).json({
-//             err: "No file exists",
-//           });
-//         }
-//         // Check if image
-//         if (
-//           file.contentType === "image/jpeg" ||
-//           file.contentType === "image/png"
-//         ) {
-//           console.log(file);
-
-//           const readstream = gridFs.openDownloadStream(file._id);
-//           readstream.pipe(res);
-//         } else {
-//           res.status(404).json({
-//             err: "Not an image",
-//           });
-//         }
-//       }
-//     );
-//   };
-// };
 module.exports.getChildrenBooks = () => {
   return async (req, res) => {
+    let books = [];
+    let book;
     const axios = require("axios");
 
     const options = {
@@ -115,19 +87,24 @@ module.exports.getChildrenBooks = () => {
       .request(options)
       .then(function (response) {
         console.log(response.data);
-        response.data.Books.map(async (item) => {
-      const existingBook = await Book.findOne({ title: item.title });
-      if (!existingBook) {
-        book = new Book(item);
-        await book.save();
-      } else {
-        console.log("found book");
-      }
-    });
+        response.data.map(async (item) => {
+          const existingBook = await childrenBooks.findOne({
+            title: item.title,
+          });
+          if (!existingBook) {
+            book = new childrenBooks(item);
+            await book.save();
+          }
+        
+        });
       })
       .catch(function (error) {
         console.error(error);
       });
+      
+      const availableBooks  = await childrenBooks.find()
+      console.log(availableBooks)
+      res.json({childrenBooks: availableBooks, success:"true"}).status(200)
   };
 };
 

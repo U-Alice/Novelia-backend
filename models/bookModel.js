@@ -49,7 +49,7 @@ const childrenBooks = mongoose.Schema({
         type: String,
         required: true
     },
-    imgUrl: {
+    url: {
         type: String,
         required: true
     }
