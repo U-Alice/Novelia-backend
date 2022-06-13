@@ -1,5 +1,5 @@
 const uuid = require("uuid");
-const { Book, childrenBooks } = require("../models/bookModel");
+const { Book, childrenBooks, Romance } = require("../models/bookModel");
 const _ = require("lodash");
 const cloudinary = require("cloudinary").v2;
 const mongoose = require("mongoose");
@@ -95,16 +95,15 @@ module.exports.getChildrenBooks = () => {
             book = new childrenBooks(item);
             await book.save();
           }
-        
         });
       })
       .catch(function (error) {
         console.error(error);
       });
-      
-      const availableBooks  = await childrenBooks.find()
-      console.log(availableBooks)
-      res.json({childrenBooks: availableBooks, success:"true"}).status(200)
+
+    const availableBooks = await childrenBooks.find();
+    console.log(availableBooks);
+    res.json({ childrenBooks: availableBooks, success: "true" }).status(200);
   };
 };
 
@@ -157,7 +156,7 @@ module.exports.getOne = () => {
 };
 
 module.exports.topTen = () => {
-  return async () => {
+  return async (req, res) => {
     const fetch = require("node-fetch");
     let books = [];
     let book;
@@ -175,4 +174,38 @@ module.exports.topTen = () => {
     console.log(data);
     res.json({ success: true, books: data }).status(200);
   };
+};
+module.exports.getByGenre = () => {
+  return async (req, res) => {
+  const axios = require("axios");
+    let books = [];
+    let book;
+  const options = {
+    method: "GET",
+    url: "https://hapi-books.p.rapidapi.com/week/romance",
+    headers: {
+      "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
+      "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
+    },
+  };
+
+  axios
+    .request(options)
+    .then(function (response) {
+      console.log(response.data);
+
+      data.Books.map(async (item) => {
+        const existingBook = await Romance.findOne({ title: item.name });
+        if (!existingBook) {
+          book = new Book(item);
+          await Romance.save();
+        } else {
+          console.log("found book");
+        }
+      });
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
+  }
 };

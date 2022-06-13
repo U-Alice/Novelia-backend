@@ -33,7 +33,7 @@ const Router = require('express').Router
 //  }
 // })
 // const upload = multer({storage})
-const {uploadBook, getUploads, getOne, getBooks, getChildrenBooks} = require('./handlers/handlers');
+const {uploadBook, getUploads, getOne, getBooks, getChildrenBooks, topTen, getByGenre} = require('./handlers/handlers');
 const { login, register, forgotPassword, oAuth, getTokens, getGoogleUser } = require('./handlers/userController');
 const { GoogleAuth } = require('google-auth-library');
 
@@ -52,6 +52,8 @@ module.exports.router= (app, db)=>{
         console.log(req.file)
     })
     router.get('/childrenBooks', getChildrenBooks())
+    router.get('/topTen', topTen())
+    router.get('/getByGenre', getByGenre())
     app.use(router)
 
 }

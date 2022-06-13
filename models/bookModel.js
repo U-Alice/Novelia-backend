@@ -36,7 +36,7 @@ const bookSchema = mongoose.Schema({
 })
 module.exports.Book = mongoose.model('Book',bookSchema)
 
-const childrenBooks = mongoose.Schema({
+const romance = mongoose.Schema({
     bookId:{
         type: String,
         default: uuid.v4()
@@ -53,8 +53,6 @@ const childrenBooks = mongoose.Schema({
         type: String,
         required: true
     }
-
-
-
 })
-module.exports.childrenBooks = mongoose.model('ChildrenBooks',childrenBooks)
+
+module.exports.Romance = mongoose.model('Romance',romance)
