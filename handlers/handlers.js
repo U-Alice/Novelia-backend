@@ -1,5 +1,5 @@
 const uuid = require("uuid");
-const { Book, childrenBooks, Romance } = require("../models/bookModel");
+const { Book, childrenBooks, Romance, Comedy, Horror, Science } = require("../models/bookModel");
 const _ = require("lodash");
 const cloudinary = require("cloudinary").v2;
 const mongoose = require("mongoose");
@@ -151,39 +151,9 @@ module.exports.topTen = () => {
   };
 };
 
-module.exports.getByGenre = () => {
-  return async (req, res) => {
-    const axios = require("axios");
-    let books = [];
-    let book;
-    const options = {
-      method: "GET",
-      url: "https://hapi-books.p.rapidapi.com/week/comedy",
-      headers: {
-        "X-RapidAPI-Key": "541f046c76msh7a31cc1d5bbe523p106201jsnc0ea3ebaf14c",
-        "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
-      },
-    };
-
-    axios
-      .request(options)
-      .then(function (response) {
-        console.log(response.data);
-
-        response.data.map(async (item) => {
-          book = new Romance(item);
-          await book.save();
-        });
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-  };
-};
-
 module.exports.getBooksByGenre = () => {
   return async (req, res) => {
-    const books = [];
+    let books = [];
     try {
       const genre = req.query.genre;
       if (genre === "romance") {
@@ -198,6 +168,9 @@ module.exports.getBooksByGenre = () => {
           break;
         case "science":
           books = await Science.find();
+          break;
+        case "comedy":
+          books = await Comedy.find();
           break;
         default:
           res.json({ message: "Could not find requested genre" });

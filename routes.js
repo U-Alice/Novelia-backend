@@ -28,7 +28,7 @@ module.exports.router= (app, db)=>{
     })
     router.get('/childrenBooks', getChildrenBooks())
     router.get('/topTen', topTen())
-    router.get('/romance/getByGenre', getByGenre())
+    // router.get('/romance/getByGenre', getByGenre())
     router.get('/getByGenre', getBooksByGenre())
     app.use(router)
 

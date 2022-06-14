@@ -55,8 +55,82 @@ const romance = mongoose.Schema({
     type:{
         type: String,
         required: true,
+        default: "romance"
+    }
+})
+
+module.exports.Romance = mongoose.model('romance',romance)
+const science = mongoose.Schema({
+    book_id:{
+        type: String,
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    url: {
+        type: String,
+        required: true
+    },
+    cover:{
+        type: String,
+        required: true
+    },
+    type:{
+        type: String,
+        required: true,
+        default: "science"
+    }
+})
+
+module.exports.Science = mongoose.model('science',science)
+
+const comedy = mongoose.Schema({
+    book_id:{
+        type: String,
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    url: {
+        type: String,
+        required: true
+    },
+    cover:{
+        type: String,
+        required: true
+    },
+    type:{
+        type: String,
+        required: true,
         default: "comedy"
     }
 })
 
-module.exports.Romance = mongoose.model('adventure',romance)
+module.exports.Comedy = mongoose.model('comedy',comedy)
+
+const horror = mongoose.Schema({
+    book_id:{
+        type: String,
+    },
+    name: {
+        type: String,
+        required: true,
+    },
+    url: {
+        type: String,
+        required: true
+    },
+    cover:{
+        type: String,
+        required: true
+    },
+    type:{
+        type: String,
+        required: true,
+        default: "horror"
+    }
+})
+
+module.exports.Horror = mongoose.model('horror',horror)
