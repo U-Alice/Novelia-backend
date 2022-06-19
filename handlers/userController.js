@@ -29,14 +29,10 @@ async function newUser(email, password, username) {
     password: hashedPassword,
     userName: username,
   });
+  user.generateToken()
   await user.save((err, doc) => {
     if (err) console.dir(err);
     console.log(doc);
-    const newProfile = new Profile({
-      image: image,
-      userId: doc._id,
-    });
-    newProfile.save();
   });
   const message = {
     message: "User registration successfull",
@@ -74,7 +70,7 @@ module.exports.register = (db) => {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.userName;
-    const response = await newUser(email, password, username, image);
+    const response = await newUser(email, password, username);
     return res
       .status(response.statusCode)
       .json({ message: response.message, success: response.status });
