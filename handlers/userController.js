@@ -7,6 +7,13 @@ const { sendMail } = require("../utils/sendMail");
 const QueryString = require("qs");
 const redirectURI = "auth/google";
 const jwt = require("jsonwebtoken");
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: "daso1btiz",
+  api_key: "468557256968463",
+  api_secret: "3S13jGO6WJPZ6-ojNFRUZmeshaY",
+  secure: true,
+});
 const axios = require("axios");
 const { Profile } = require("../models/profilesModel");
 
@@ -29,7 +36,7 @@ async function newUser(email, password, username) {
     password: hashedPassword,
     userName: username,
   });
-  user.generateToken()
+  user.generateToken();
   await user.save((err, doc) => {
     if (err) console.dir(err);
     console.log(doc);
@@ -44,12 +51,20 @@ async function newUser(email, password, username) {
 module.exports.uploadProfile = () => {
   return async (req, res) => {
     try {
-      const user = await User.findOneById(req.user.user._id);
+      const file = req.body;
+      console.log(file);
+      cloudinary.uploader.upload(file.data, function (error, result) {
+        console.log(result);
+        if (error) {
+          console.log(error);
+        }
+      });
+      const user = await User.findOne({ _id: req.user });
       const profile = await Profile.findOne({ userId: user._id });
       if (profile) {
         Profile.findOneAndUpdate(
           { userId: user._id },
-          { image: req.file.path }
+          { image: req.body.image }
         );
       } else {
         const newProfile = new Profile({
@@ -61,6 +76,7 @@ module.exports.uploadProfile = () => {
         });
       }
     } catch (err) {
+      console.log(err);
       res.json({ success: false, message: err });
     }
   };
