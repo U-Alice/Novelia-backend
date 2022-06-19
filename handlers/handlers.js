@@ -1,5 +1,12 @@
 const uuid = require("uuid");
-const { Book, childrenBooks, Romance, Comedy, Horror, Science } = require("../models/bookModel");
+const {
+  Book,
+  childrenBooks,
+  Romance,
+  Comedy,
+  Horror,
+  Science,
+} = require("../models/bookModel");
 const _ = require("lodash");
 const cloudinary = require("cloudinary").v2;
 const mongoose = require("mongoose");
@@ -21,16 +28,6 @@ cloudinary.config({
 });
 const conn = mongoose.createConnection(process.env.URL);
 // Init gfs
-let gfs;
-let gridFs;
-conn.once("open", () => {
-  gridFs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "uploads",
-  });
-  // Init stream
-  gfs = Grid(conn.db, mongoose.mongo);
-  gfs.collection("uploads");
-});
 module.exports.uploadBook = () => {
   return async (req, res) => {
     try {
@@ -56,7 +53,11 @@ module.exports.uploadBook = () => {
     }
   };
 };
+module.exports.uploadProfile = ()=>{
+  return async(req, res)=>{
 
+  }
+}
 module.exports.getUploads = (req, res, next) => {
   gfs.files.find().toArray((err, files) => {
     if (!files || files.length === 0) {
@@ -107,12 +108,6 @@ module.exports.getChildrenBooks = () => {
   };
 };
 
-module.exports.getBooks = () => {
-  return async (req, res) => {
-    const availableBooks = await Book.find();
-    res.json({ books: availableBooks }).status(400);
-  };
-};
 
 module.exports.getOne = () => {
   return async (req, res) => {
@@ -143,7 +138,6 @@ module.exports.topTen = () => {
         "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
       },
     };
-
     const api = await fetch(url, options);
     const data = await api.json();
     console.log(data);

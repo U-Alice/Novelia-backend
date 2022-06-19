@@ -8,10 +8,10 @@ const QueryString = require("qs");
 const redirectURI = "auth/google";
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
+const { Profile } = require("../models/profilesModel");
 
 async function newUser(email, password, username) {
-  // return console.log("done");
-  const salt = await bcrypt.genSalt(10);
+  const salt = bcrypt.genSaltSync(10);
   const hashedPassword = await bcrypt.hash(password, salt);
   const result = await User.findOne({
     $or: [{ email: email, userName: username }],
@@ -24,7 +24,6 @@ async function newUser(email, password, username) {
     };
     return message;
   }
-
   const user = new User({
     email: email,
     password: hashedPassword,
@@ -33,6 +32,11 @@ async function newUser(email, password, username) {
   await user.save((err, doc) => {
     if (err) console.dir(err);
     console.log(doc);
+    const newProfile = new Profile({
+      image: image,
+      userId: doc._id,
+    });
+    newProfile.save();
   });
   const message = {
     message: "User registration successfull",
@@ -41,16 +45,46 @@ async function newUser(email, password, username) {
   };
   return message;
 }
-
+module.exports.uploadProfile = () => {
+  return async (req, res) => {
+    try {
+      const user = await User.findOneById(req.user.user._id);
+      const profile = await Profile.findOne({ userId: user._id });
+      if (profile) {
+        Profile.findOneAndUpdate(
+          { userId: user._id },
+          { image: req.file.path }
+        );
+      } else {
+        const newProfile = new Profile({
+          userId: user._id,
+          image: req.body.image,
+        });
+        await newProfile.save((err, doc) => {
+          res.json({ profile: doc, success: true });
+        });
+      }
+    } catch (err) {
+      res.json({ success: false, message: err });
+    }
+  };
+};
 module.exports.register = (db) => {
   return async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const username = req.body.userName;
-    const response = await newUser(email, password, username);
+    const response = await newUser(email, password, username, image);
     return res
       .status(response.statusCode)
       .json({ message: response.message, success: response.status });
+  };
+};
+
+module.exports.getBooks = () => {
+  return async (req, res) => {
+    const availableBooks = await Book.find();
+    res.json({ books: availableBooks }).status(400);
   };
 };
 
@@ -64,9 +98,10 @@ module.exports.login = (db) => {
       return res.send("Invalid user credentials");
     }
     if (!bcrypt.compareSync(req.body.password, user.password)) {
-      return res.status(400).send({ message: "Invalid password" });
+      return res.status(400).json({ message: "Invalid password" });
     } else {
       const token = user.generateToken();
+      const profile = await Profile.findOne({ userId: user._id });
       res.cookie("token", token, {
         httpOnly: true,
         secure: true,
@@ -77,6 +112,7 @@ module.exports.login = (db) => {
         message: "Log in successfull",
         data: user,
         token: token,
+        profile: profile,
       });
     }
   };
