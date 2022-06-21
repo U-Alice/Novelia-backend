@@ -48,23 +48,39 @@ async function newUser(email, password, username) {
   };
   return message;
 }
+
+
+
+
+module.exports.getImage = ()=>{
+  return async (req,res)=>{
+   const foundProfile = await Profile.findOne({userId:req.user});
+   if(foundProfile){
+    res.json({profile:foundProfile});
+   }else{
+    res.json({profile:null, message: "Failed to retrieve profile"});
+   }
+  }
+}
+
+
+
 module.exports.uploadProfile = () => {
   return async (req, res) => {
     try {
       const file = req.body;
       console.log(file);
       cloudinary.uploader.upload(file.data, function (error, result) {
-        console.log(result);
         if (error) {
-          console.log(error);
+          console.log(error)
         }
       });
       const user = await User.findOne({ _id: req.user });
       const profile = await Profile.findOne({ userId: user._id });
       if (profile) {
-        Profile.findOneAndUpdate(
+        await Profile.findOneAndUpdate(
           { userId: user._id },
-          { image: req.body.image }
+          { image: req.body.data }
         );
       } else {
         const newProfile = new Profile({
@@ -81,6 +97,9 @@ module.exports.uploadProfile = () => {
     }
   };
 };
+
+
+
 module.exports.register = (db) => {
   return async (req, res) => {
     const email = req.body.email;
@@ -93,12 +112,16 @@ module.exports.register = (db) => {
   };
 };
 
+
+
 module.exports.getBooks = () => {
   return async (req, res) => {
     const availableBooks = await Book.find();
     res.json({ books: availableBooks }).status(400);
   };
 };
+
+
 
 module.exports.login = (db) => {
   return async (req, res) => {
@@ -129,6 +152,8 @@ module.exports.login = (db) => {
     }
   };
 };
+
+
 
 module.exports.forgotPassword = (db) => {
   return async (req, res) => {
@@ -181,6 +206,8 @@ module.exports.forgotPassword = (db) => {
   };
 };
 
+
+
 module.exports.verifyEmail = (db) => {
   return async (req, res) => {
     const updatePassword = await Password.findOne({
@@ -193,6 +220,8 @@ module.exports.verifyEmail = (db) => {
     res.status(200).send("OTP validation successfull");
   };
 };
+
+
 module.exports.updatePassword = () => {
   return async (req, res) => {
     const salt = await bcrypt.genSalt(10);
@@ -278,9 +307,6 @@ function getTokens({ code }) {
     redirect_uri: "http://localhost:4001/auth/google",
     grant_type: "authorization_code",
   };
-
-  console.log(values);
-
   return axios
     .post(url, values, {
       headers: {

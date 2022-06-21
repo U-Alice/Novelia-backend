@@ -25,6 +25,7 @@ const {
   getTokens,
   getGoogleUser,
   uploadProfile,
+  getImage,
 } = require("./handlers/userController");
 const { GoogleAuth } = require("google-auth-library");
 const { auth } = require("./handlers/auth");
@@ -46,5 +47,7 @@ module.exports.router = (app, db) => {
   router.get("/topTen", topTen());
   router.post("/addProfile", auth(), uploadProfile());
   router.get("/getByGenre", getBooksByGenre());
+  router.get("/getProfile",  getImage());
+
   app.use(router);
 };
