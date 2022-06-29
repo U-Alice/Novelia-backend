@@ -18,6 +18,7 @@ const { GridFSBucket } = require("mongodb");
 const rapidApi = require("rapidapi-connect");
 const { result } = require("lodash");
 const rapid = new rapidApi("", "");
+// const db = mongoose.connection;
 dotenv.config();
 
 cloudinary.config({
@@ -53,11 +54,9 @@ module.exports.uploadBook = () => {
     }
   };
 };
-module.exports.uploadProfile = ()=>{
-  return async(req, res)=>{
-
-  }
-}
+module.exports.uploadProfile = () => {
+  return async (req, res) => {};
+};
 module.exports.getUploads = (req, res, next) => {
   gfs.files.find().toArray((err, files) => {
     if (!files || files.length === 0) {
@@ -108,7 +107,6 @@ module.exports.getChildrenBooks = () => {
   };
 };
 
-
 module.exports.getOne = () => {
   return async (req, res) => {
     try {
@@ -127,21 +125,19 @@ module.exports.getOne = () => {
 
 module.exports.topTen = () => {
   return async (req, res) => {
-    const fetch = require("node-fetch");
-    let books = [];
-    let book;
-    const url = "https://hapi-books.p.rapidapi.com/week/horror";
-    const options = {
-      method: "GET",
-      headers: {
-        "X-RapidAPI-Host": "hapi-books.p.rapidapi.com",
-        "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
-      },
-    };
-    const api = await fetch(url, options);
-    const data = await api.json();
-    console.log(data);
-    res.json({ success: true, books: data }).status(200);
+    try {
+      const fetch = require("node-fetch");
+      // let books = await db.collection("book").find({});
+      if (books) {
+        res.json({ message: "Successful", status: "ok", books: books });
+      }else{
+        res.json({ message: "Successful", status: "ok", books: books });
+
+      }
+    } catch (error) {
+      console.log(error);
+      res.json({ message: "Internal Server error", status: "Failed" });
+    }
   };
 };
 

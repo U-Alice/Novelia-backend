@@ -47,7 +47,7 @@ module.exports.router = (app, db) => {
   router.get("/topTen", topTen());
   router.post("/addProfile", auth(), uploadProfile());
   router.get("/getByGenre", getBooksByGenre());
-  router.get("/getProfile",  getImage());
+  router.get("/getProfile", auth(), getImage());
 
   app.use(router);
 };

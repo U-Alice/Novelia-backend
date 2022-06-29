@@ -12,15 +12,7 @@ const Grid = require('gridfs-stream')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const fileupload = require('express-fileupload');
-const database = mongoose.connect(process.env.URL).then(()=>{
-    console.log('connected to the database')
-}).catch(()=>{
-    console.log('not connected to the database')
-})
-// database.once('open', ()=>{
-//     gfs = Grid(database.db, mongoose.mongo);
-//     gfs.collection('uploads');
-// })
+
 app.use(fileupload())
 app.use(cors())
 app.use(bodyParser.json());
