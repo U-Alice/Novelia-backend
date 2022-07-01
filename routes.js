@@ -48,6 +48,6 @@ module.exports.router = (app, db) => {
   router.post("/addProfile", auth(), uploadProfile());
   router.get("/getByGenre", getBooksByGenre());
   router.get("/getProfile", auth(), getImage());
-  router.get("/getBook/:id", getOne());
+  router.get("/getBook/:_id", getOne());
   app.use(router);
 };

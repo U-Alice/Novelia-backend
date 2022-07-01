@@ -110,7 +110,9 @@ module.exports.getChildrenBooks = () => {
 module.exports.getOne = () => {
   return async (req, res) => {
     try {
-      const book = await Book.findOne({ id: req.params.id });
+ 
+      const id = mongoose.Types.ObjectId(req.params._id.trim());
+      const book = await Book.findById( id);
       if (book) {
         res.send({ sucess: true, book: book });
       } else {
