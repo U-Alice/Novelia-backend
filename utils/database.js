@@ -12,4 +12,5 @@ const database = mongoose.connect(process.env.URL).then((result)=>{
 
 //     console.log(result.db)
 // })
+module.exports.Book = mongoose.connection.collection("book")
 // module.exports.database = database;

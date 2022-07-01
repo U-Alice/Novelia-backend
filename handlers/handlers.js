@@ -126,13 +126,13 @@ module.exports.getOne = () => {
 module.exports.topTen = () => {
   return async (req, res) => {
     try {
-      const fetch = require("node-fetch");
-      // let books = await db.collection("book").find({});
+      
+
+      let books = await Book.find({});
       if (books) {
         res.json({ message: "Successful", status: "ok", books: books });
-      }else{
+      } else {
         res.json({ message: "Successful", status: "ok", books: books });
-
       }
     } catch (error) {
       console.log(error);
