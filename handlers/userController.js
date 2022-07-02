@@ -114,12 +114,6 @@ module.exports.register = (db) => {
 
 
 
-module.exports.getBooks = () => {
-  return async (req, res) => {
-    const availableBooks = await Book.find();
-    res.json({ books: availableBooks }).status(400);
-  };
-};
 
 
 
