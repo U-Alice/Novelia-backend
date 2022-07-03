@@ -58,9 +58,7 @@ module.exports.deleteBook = () => {
     const userId = req.user;
     const list = await List.findOne({ user_id: userId });
     const bookId = mongoose.Types.ObjectId(req.params.bookId.trim());
-
     const selectedBook = await Book.findById(bookId);
-
     existingList = await List.findOneAndUpdate(
       { user_id: userId },
       {
