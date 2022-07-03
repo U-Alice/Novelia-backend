@@ -29,7 +29,7 @@ const {
 } = require("./handlers/userController");
 const { GoogleAuth } = require("google-auth-library");
 const { auth } = require("./handlers/auth");
-const { createList } = require("./handlers/readListControllers");
+const { createList, getList } = require("./handlers/readListControllers");
 
 module.exports.router = (app, db) => {
   router.post("/login", login());
@@ -50,6 +50,7 @@ module.exports.router = (app, db) => {
   router.get("/getByGenre", getBooksByGenre());
   router.get("/getProfile", auth(), getImage());
   router.get("/getBook/:_id", getOne());
-  router.post("/newList/:bookId",auth(), createList() )
+  router.post("/newList/:bookId",auth(), createList());
+  router.get("/getList",auth(),  getList());
   app.use(router);
 };
