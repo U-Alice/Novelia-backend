@@ -52,7 +52,7 @@ module.exports.router = (app, db) => {
   router.get("/getBook/:_id", getOne());
   router.post("/newList/:bookId",auth(), createList());
   router.get("/getList",auth(),  getList());
-  router.get("/deleteBook",auth(),  deleteBook());
+  router.get("/deleteBook/:bookId",auth(), deleteBook());
 
   app.use(router);
 };
