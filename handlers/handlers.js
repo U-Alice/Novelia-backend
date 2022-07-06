@@ -128,9 +128,8 @@ module.exports.getOne = () => {
 module.exports.topTen = () => {
   return async (req, res) => {
     try {
-      
+      let books = await Book.find()
 
-      let books = await Book.find({});
       if (books) {
         res.json({ message: "Successful", status: "ok", books: books });
       } else {

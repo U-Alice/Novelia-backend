@@ -44,7 +44,7 @@ module.exports.getList = () => {
           .status(200);
       } else {
         return res
-          .json({ status: OK, message: "no existing list, create new" })
+          .json({ status: "false", message: "no existing list, create new" })
           .status(200);
       }
     } catch (error) {
