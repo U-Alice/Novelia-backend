@@ -38,7 +38,6 @@ module.exports.getList = () => {
       const userId = req.user;
       const list = await List.findOne({ user_id: userId });
       if (list) {
-        console.log(list);
         res
           .json({ status: "oK", List: list.bookDetails, count: list.count })
           .status(200);
