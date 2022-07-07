@@ -14,6 +14,9 @@ io.on('connection', (socket)=>{
    socket.on("disconnect", ()=>{
     console.log("User disconnected", socket.id)
    })
+   socket.on("join_room", (data)=>{
+    socket.join()
+   })
 })
 server.listen(4002,()=>{
     console.log("IO server running");
