@@ -16,6 +16,10 @@ io.on('connection', (socket)=>{
    })
    socket.on("join_room", (data)=>{
     socket.join()
+    console.log(`user with id = ${socket.id} joined room : ${data}`)
+   })
+   socket.on("send_message", (data)=>{
+    console.log(data)
    })
 })
 server.listen(4002,()=>{
