@@ -18,7 +18,7 @@ module.exports.conversations = () => {
 module.exports.getConv = () => {
   return async (req, res) => {
     try {
-      const conversations = Conversation.find({ members: req.user });
+      const conversations = await Conversation.find({members: req.user});
       res.status(200).send(conversations);
     } catch (err) {
       res.status(500).json(err);

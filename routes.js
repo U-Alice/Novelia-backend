@@ -55,8 +55,8 @@ module.exports.router = (app, db) => {
   router.post("/newList/:bookId",auth(), createList());
   router.get("/getList",auth(),  getList());
   router.get("/deleteBook/:bookId",auth(), deleteBook());
-  router.post("/newConversation", conversations());
-  router.get("/conversations", auth(), getConv())
+  router.post("/newConversation",auth(), conversations());
+  router.get("/conversations",  getConv())
   router.post("/newMessage",auth(), newMessage());
   router.post("/messages/:conversationId",auth(), newMessage());
 
