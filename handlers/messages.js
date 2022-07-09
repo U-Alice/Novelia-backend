@@ -11,3 +11,13 @@ module.exports.newMessage = () =>{
         }
     }
 }
+module.exports.getMessages = ()=>{
+    return async (req, res)=>{
+        try{
+        const messages = await message.find({conversationId : req.params.conversationId})
+        res.status(200).json(messages)
+        }catch(err){
+            res.status(200).send(err)
+        }
+    }
+}

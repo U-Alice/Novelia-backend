@@ -14,7 +14,7 @@ module.exports.conversations = () => {
   };
 };
 
-module.exports.getConv(() => {
+module.exports.getConv = () => {
   return async (req, res) => {
     try {
       const conversations = Conversation.find({ members: req.user });
@@ -23,4 +23,4 @@ module.exports.getConv(() => {
       res.status(500).json(err);
     }
   };
-});
+};
