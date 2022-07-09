@@ -2,11 +2,12 @@ const { Conversation } = require("../models/chat/conversation");
 
 module.exports.conversations = () => {
   return async (req, res) => {
+    console.log(req.body)
     const newConversation = new Conversation({
       members: [req.body.senderId, req.body.receiverId],
     });
     try {
-      const savedConversation = newConversation.save();
+      const savedConversation =await newConversation.save();
       res.status(200).json(savedConversation);
     } catch (err) {
       res.status(500).json(err);
