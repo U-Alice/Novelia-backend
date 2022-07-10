@@ -49,6 +49,18 @@ async function newUser(email, password, username) {
   return message;
 }
 
+module.exports.getUser = ()=>{
+  return async (req, res)=>{
+    try{
+    const user = await User.findById(req.params.userId)
+    const profile = await Profile.findOne({userId : req.params.userId})
+    const {password , ...other} = user._doc
+    res.json({success: "true", user : other, profile: profile})
+    }catch(err){
+      res.send("Internal server error").status(500)
+    }
+  }
+}
 
 
 

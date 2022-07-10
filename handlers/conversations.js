@@ -8,7 +8,7 @@ module.exports.conversations = () => {
     });
     try {
       const savedConversation =await newConversation.save();
-      res.status(200).json(savedConversation);
+      res.status(200).json({data : savedConversation, success: true});
     } catch (err) {
       res.status(500).json(err);
     }
@@ -17,6 +17,7 @@ module.exports.conversations = () => {
 
 module.exports.getConv = () => {
   return async (req, res) => {
+    console.log(req.user)
     try {
       const conversations = await Conversation.find({members: req.user});
       res.status(200).send(conversations);

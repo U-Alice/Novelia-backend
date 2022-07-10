@@ -26,6 +26,7 @@ const {
   getGoogleUser,
   uploadProfile,
   getImage,
+  getUser,
 } = require("./handlers/userController");
 const { GoogleAuth } = require("google-auth-library");
 const { auth } = require("./handlers/auth");
@@ -56,9 +57,10 @@ module.exports.router = (app, db) => {
   router.get("/getList",auth(),  getList());
   router.get("/deleteBook/:bookId",auth(), deleteBook());
   router.post("/newConversation",auth(), conversations());
-  router.get("/conversations",  getConv())
-  router.post("/newMessage",auth(), newMessage());
-  router.post("/messages/:conversationId",auth(), newMessage());
+  router.get("/conversations",auth(),  getConv())
+  router.post("/newMessage",auth(),  newMessage());
+  router.post("/messages/:conversationId", newMessage());
+  router.get("/getUser/:userId",auth(),  getUser());
 
 
 
