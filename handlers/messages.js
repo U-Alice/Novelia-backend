@@ -14,6 +14,7 @@ module.exports.newMessage = () =>{
 module.exports.getMessages = ()=>{
     return async (req, res)=>{
         try{
+            console.log(req.params.conversationId)
         const messages = await message.find({conversationId : req.params.conversationId})
         res.status(200).json(messages)
         }catch(err){

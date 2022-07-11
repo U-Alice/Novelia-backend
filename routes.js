@@ -32,7 +32,7 @@ const { GoogleAuth } = require("google-auth-library");
 const { auth } = require("./handlers/auth");
 const { createList, getList, deleteBook } = require("./handlers/readListControllers");
 const { conversations, getConv } = require("./handlers/conversations");
-const { newMessage } = require("./handlers/messages");
+const { newMessage, getMessages } = require("./handlers/messages");
 
 module.exports.router = (app, db) => {
   router.post("/login", login());
@@ -59,7 +59,7 @@ module.exports.router = (app, db) => {
   router.post("/newConversation",auth(), conversations());
   router.get("/conversations",auth(),  getConv())
   router.post("/newMessage",auth(),  newMessage());
-  router.post("/messages/:conversationId", newMessage());
+  router.get("/messages/:conversationId",auth(), getMessages());
   router.get("/getUser/:userId",auth(),  getUser());
 
 
