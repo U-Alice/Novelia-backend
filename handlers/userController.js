@@ -63,6 +63,24 @@ module.exports.getUser = ()=>{
 }
 
 
+module.exports.getUsers = ()=>{
+  return async (req, res)=>{
+    try{
+    const allUsers = await User.find()
+    const userList =  []
+    allUsers.map( async(user)=>{
+      const profile = await Profile.findOne({userId : user._id})
+      const {_id, userName } = user;
+      userList.push({_id, userName, profile})
+    })
+    res.json({success: "true", users: userList})
+    }catch(err){
+      console.log(err)
+      res.send("Internal server error").status(500)
+    }
+  }
+}
+
 
 module.exports.getImage = ()=>{
   return async (req,res)=>{
@@ -81,7 +99,6 @@ module.exports.uploadProfile = () => {
   return async (req, res) => {
     try {
       const file = req.body;
-      console.log(file);
       cloudinary.uploader.upload(file.data, function (error, result) {
         if (error) {
           console.log(error)
@@ -134,7 +151,6 @@ module.exports.login = (db) => {
     const user = await User.findOne({
       email: req.body.email,
     }).exec();
-    console.log(user);
     if (!user) {
       return res.send("Invalid user credentials");
     }

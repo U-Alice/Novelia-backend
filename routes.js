@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const crypto = require("crypto");
-const multer = require("multer");
-const { GridFsStorage } = require("multer-gridfs-storage");
+
 const dotenv = require("dotenv");
 const path = require("path");
 dotenv.config();
-const mongoose = require("mongoose");
-const Router = require("express").Router;
+
 const {
   uploadBook,
   getUploads,
@@ -27,6 +24,7 @@ const {
   uploadProfile,
   getImage,
   getUser,
+  getUsers,
 } = require("./handlers/userController");
 const { GoogleAuth } = require("google-auth-library");
 const { auth } = require("./handlers/auth");
@@ -38,15 +36,9 @@ module.exports.router = (app, db) => {
   router.post("/login", login());
   router.post("/register", register());
   router.post("/reset", forgotPassword());
-  router.post("/upload", uploadBook());
+  router.post("/uploadBook", uploadBook());
   router.get("/getAuth", oAuth());
   router.get("/auth/google", getGoogleUser());
-  router.post("/uploaded", (req, res) => {
-    console.log(req.file);
-  });
-  router.get("/home", (req, res) => {
-    res.send("working");
-  });
   router.get("/childrenBooks", getChildrenBooks());
   router.get("/topTen", topTen());
   router.post("/addProfile", auth(), uploadProfile());
@@ -61,6 +53,8 @@ module.exports.router = (app, db) => {
   router.post("/newMessage",auth(),  newMessage());
   router.get("/messages/:conversationId",auth(), getMessages());
   router.get("/getUser/:userId",auth(),  getUser());
+  router.get("/getUsers",  getUsers());
+
 
 
 

@@ -37,9 +37,10 @@ module.exports.uploadBook = () => {
         const newBook = _.pick(req.body, [
           "name",
           "year",
-          "rating",
+          "cover",
           "author",
-          "preview",
+          "type",
+          "description"
         ]);
         cloudinary.uploader.upload(req.file.filename, (error, result) =>
           console.log(result, error)
@@ -56,16 +57,6 @@ module.exports.uploadBook = () => {
 };
 module.exports.uploadProfile = () => {
   return async (req, res) => {};
-};
-module.exports.getUploads = (req, res, next) => {
-  gfs.files.find().toArray((err, files) => {
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        err: "No files exist",
-      });
-    }
-    return res.json(files);
-  });
 };
 
 module.exports.getChildrenBooks = () => {
@@ -110,7 +101,6 @@ module.exports.getChildrenBooks = () => {
 module.exports.getOne = () => {
   return async (req, res) => {
     try {
- 
       const id = mongoose.Types.ObjectId(req.params._id.trim());
       const book = await Book.findById(id);
       if (book) {
@@ -128,7 +118,7 @@ module.exports.getOne = () => {
 module.exports.topTen = () => {
   return async (req, res) => {
     try {
-      let books = await Book.find()
+      let books = await Book.find();
 
       if (books) {
         res.json({ message: "Successful", status: "ok", books: books });
