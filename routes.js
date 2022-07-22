@@ -33,6 +33,9 @@ const { conversations, getConv } = require("./handlers/conversations");
 const { newMessage, getMessages } = require("./handlers/messages");
 
 module.exports.router = (app, db) => {
+  router.get("/", (req, res)=>{
+    res.send("Welcome to novelia backend")
+  })
   router.post("/login", login());
   router.post("/register", register());
   router.post("/reset", forgotPassword());
