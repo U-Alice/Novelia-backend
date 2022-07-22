@@ -52,7 +52,7 @@ module.exports.router = (app, db) => {
   router.get("/getList",auth(),  getList());
   router.get("/deleteBook/:bookId",auth(), deleteBook());
   router.post("/newConversation",auth(), conversations());
-  router.get("/conversations",auth(),  getConv())
+  router.get("/conversations",  getConv())
   router.post("/newMessage",auth(),  newMessage());
   router.get("/messages/:conversationId",auth(), getMessages());
   router.get("/getUser/:userId",auth(),  getUser());
