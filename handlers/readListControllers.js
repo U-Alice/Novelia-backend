@@ -28,8 +28,8 @@ module.exports.createList = (req, res, next) => {
           $inc: { count: 1 },
         }
       );
+      res.send("Book added to existing to List")
     }
-    console.log(existingList);
   };
 };
 module.exports.getList = () => {
