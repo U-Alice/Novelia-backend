@@ -25,7 +25,7 @@ const bookSchema = mongoose.Schema({
     }
 
 })
-module.exports.Book = mongoose.model('newBook',bookSchema)
+module.exports.Book = mongoose.model('Book',bookSchema)
 
 const romance = mongoose.Schema({
     book_id:{
