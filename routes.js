@@ -31,7 +31,7 @@ const { auth } = require("./handlers/auth");
 const { createList, getList, deleteBook } = require("./handlers/readListControllers");
 const { conversations, getConv } = require("./handlers/conversations");
 const { newMessage, getMessages } = require("./handlers/messages");
-const { uploadFile } = require("./handlers/filesController");
+const { uploadFile, getFiles } = require("./handlers/filesController");
 
 module.exports.router = (app, db) => {
   router.get("/", (req, res)=>{
@@ -40,7 +40,8 @@ module.exports.router = (app, db) => {
   router.post("/login", login());
   router.post("/register", register());
   router.post("/reset", forgotPassword());
-  router.post("/uploadBook", uploadFile());
+  router.post("/uploadBook",auth(), uploadFile());
+  router.get("/getMyBooks",auth(), getFiles());
   router.get("/getAuth", oAuth());
   router.get("/auth/google", getGoogleUser());
   router.get("/childrenBooks", getChildrenBooks());

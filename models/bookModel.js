@@ -10,6 +10,7 @@ const bookSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    
     author: {
         type: String,
         required: true
@@ -26,7 +27,34 @@ const bookSchema = mongoose.Schema({
 
 })
 module.exports.Book = mongoose.model('Book',bookSchema)
+const newBook = mongoose.Schema({
+    bookId:{
+        type: String,
+        default: uuid.v4()
+    },
+    creator : {
+        type: ObjectId
+    },
+    title: {
+        type: String,
+        required: true,
+    },
+    author: {
+        type: String,
+        required: true
+    },
+    imgUrl:{
+        type: String, 
+    }, 
+    description:{
+        type: String
+    }, 
+    name: {
+        type: String
+    }
 
+})
+module.exports.newBook = mongoose.model('newBook',newBook)
 const romance = mongoose.Schema({
     book_id:{
         type: String,

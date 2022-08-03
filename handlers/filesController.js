@@ -1,7 +1,7 @@
 let formidable = require("formidable");
 let fs = require("fs");
 const path = require("path");
-const { Book } = require("../models/bookModel");
+const { Book, newBook } = require("../models/bookModel");
 
 module.exports.uploadFile = () => {
   return async (req, res) => {
@@ -44,7 +44,9 @@ module.exports.uploadFile = () => {
           console.log(err)
         }
         try{
+          console.log(req.user)
           const newFile =  await Book.create({
+            creator: req.user,
             title: fields.title, 
             author: fields.author, 
             description: fields.description, 
@@ -63,3 +65,14 @@ module.exports.uploadFile = () => {
     });
   };
 };
+module.exports.getFiles = ()=>{
+  return async (req, res)=>{
+    try{
+      const myBooks = await newBook.find({creator : req.user})
+      return myBooks ? res.json({message: "Books successfully retrieved", books : myBooks}).status(200) :  res.json({message: "Failed to retrieve books", books : myBooks}).status(400) 
+    }catch(err){
+      console.log(err)
+      return res.json({message:"internal server error"}).status(500)
+    }
+  }
+}
