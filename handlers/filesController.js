@@ -54,7 +54,7 @@ module.exports.uploadFile = () => {
           })
           return res.status(200).json({
             status: "success",
-            message: "File created successfully!!",
+            message: "Book uploaded successfully!!",
           });
         }catch (error) {
           res.json({
