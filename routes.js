@@ -34,6 +34,9 @@ const { newMessage, getMessages } = require("./handlers/messages");
 const { uploadFile } = require("./handlers/filesController");
 
 module.exports.router = (app, db) => {
+  router.get("/", (req, res)=>{
+    res.send("Welcome to novelia backend")
+  })
   router.post("/login", login());
   router.post("/register", register());
   router.post("/reset", forgotPassword());
@@ -50,7 +53,7 @@ module.exports.router = (app, db) => {
   router.get("/getList",auth(),  getList());
   router.get("/deleteBook/:bookId",auth(), deleteBook());
   router.post("/newConversation",auth(), conversations());
-  router.get("/conversations",auth(),  getConv())
+  router.get("/conversations", auth(), getConv())
   router.post("/newMessage",auth(),  newMessage());
   router.get("/messages/:conversationId",auth(), getMessages());
   router.get("/getUser/:userId",auth(),  getUser());
