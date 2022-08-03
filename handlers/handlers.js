@@ -29,35 +29,6 @@ cloudinary.config({
 });
 const conn = mongoose.createConnection(process.env.URL);
 // Init gfs
-module.exports.uploadBook = () => {
-  return async (req, res) => {
-    try {
-      console.log(req.file);
-      if (req.file) {
-        const newBook = _.pick(req.body, [
-          "name",
-          "year",
-          "cover",
-          "author",
-          "type",
-          "description"
-        ]);
-        cloudinary.uploader.upload(req.file.filename, (error, result) =>
-          console.log(result, error)
-        );
-        const saveBook = new Book(newBook);
-        await saveBook.save();
-      } else {
-        res.send("no file chosen");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
-module.exports.uploadProfile = () => {
-  return async (req, res) => {};
-};
 
 module.exports.getChildrenBooks = () => {
   return async (req, res) => {

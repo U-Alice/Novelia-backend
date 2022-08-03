@@ -10,31 +10,22 @@ const bookSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    source: {
-        type: String,
-        required: true
-    },
     author: {
         type: String,
         required: true
     },
     imgUrl:{
         type: String, 
-        required: true
     }, 
     description:{
         type: String
     }, 
-    price:{
-        type: String, 
-        required: true
-    }, 
-    review: {
+    name: {
         type: String
     }
 
 })
-module.exports.Book = mongoose.model('Book',bookSchema, 'books')
+module.exports.Book = mongoose.model('newBook',bookSchema)
 
 const romance = mongoose.Schema({
     book_id:{

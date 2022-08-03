@@ -15,7 +15,6 @@ const fileupload = require("express-fileupload");
 const { Chat } = require("./handlers/chat");
 
 Chat()
-app.use(fileupload());
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
