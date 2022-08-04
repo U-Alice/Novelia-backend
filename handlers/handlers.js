@@ -27,7 +27,6 @@ cloudinary.config({
   api_secret: "3S13jGO6WJPZ6-ojNFRUZmeshaY",
   secure: true,
 });
-const conn = mongoose.createConnection(process.env.URL);
 // Init gfs
 
 module.exports.getChildrenBooks = () => {
