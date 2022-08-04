@@ -39,7 +39,7 @@ module.exports.getChildrenBooks = () => {
       method: "GET",
       url: "https://best-childrens-books.p.rapidapi.com/books/timegoodreads",
       headers: {
-        "X-RapidAPI-Key": "9657fe62f6msha6e9555c9710604p10b4a2jsn29b89285b70c",
+        "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
         "X-RapidAPI-Host": "best-childrens-books.p.rapidapi.com",
       },
     };
